@@ -3,10 +3,871 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Добро пожаловать</title>
+    <title>Traffic Arbitrage Guide</title>
+    <style>
+        :root {
+            --color-background: #1a1a1a;
+            --color-surface: #2a2a2a;
+            --color-text: #ffffff;
+            --color-text-secondary: #b0b0b0;
+            --color-accent: #4a90e2;
+            --color-accent-hover: #357abd;
+            --color-border: #3a3a3a;
+            --color-table-header: #333333;
+            --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            --space-xs: 8px;
+            --space-sm: 16px;
+            --space-md: 24px;
+            --space-lg: 32px;
+            --space-xl: 48px;
+            --border-radius: 8px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family-base);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-sm);
+        }
+
+        /* Header */
+        .header {
+            background-color: var(--color-surface);
+            border-bottom: 1px solid var(--color-border);
+            padding: var(--space-sm) 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--space-sm);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-accent);
+        }
+
+        .header-controls {
+            display: flex;
+            gap: var(--space-sm);
+            align-items: center;
+        }
+
+        .lang-switcher {
+            display: flex;
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: none;
+            color: var(--color-text-secondary);
+            padding: var(--space-xs) var(--space-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+
+        .lang-btn.active {
+            background-color: var(--color-accent);
+            color: var(--color-text);
+        }
+
+        .lang-btn:hover:not(.active) {
+            background-color: var(--color-border);
+        }
+
+        .faq-btn {
+            background-color: var(--color-accent);
+            border: none;
+            color: var(--color-text);
+            padding: var(--space-xs) var(--space-md);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+        }
+
+        .faq-btn:hover {
+            background-color: var(--color-accent-hover);
+        }
+
+        /* Main Content */
+        .main {
+            padding: var(--space-xl) 0;
+        }
+
+        .section {
+            background-color: var(--color-surface);
+            border-radius: var(--border-radius);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+            box-shadow: var(--shadow);
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: var(--space-md);
+            color: var(--color-accent);
+            border-bottom: 2px solid var(--color-accent);
+            padding-bottom: var(--space-xs);
+        }
+
+        .section-description {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-md);
+        }
+
+        /* Tables */
+        .table-wrapper {
+            overflow-x: auto;
+            margin-bottom: var(--space-md);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--color-background);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: var(--space-sm);
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+            font-size: 1rem;
+        }
+
+        th {
+            background-color: var(--color-table-header);
+            font-weight: 600;
+            color: var(--color-accent);
+        }
+
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Bullet Lists */
+        .bullet-list {
+            list-style: none;
+            margin-bottom: var(--space-md);
+        }
+
+        .bullet-list li {
+            position: relative;
+            padding-left: var(--space-md);
+            margin-bottom: var(--space-xs);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .bullet-list li::before {
+            content: '→';
+            color: var(--color-accent);
+            font-weight: 600;
+            position: absolute;
+            left: 0;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: var(--color-surface);
+            margin: 5% auto;
+            padding: var(--space-lg);
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-md);
+            border-bottom: 2px solid var(--color-accent);
+            padding-bottom: var(--space-xs);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-accent);
+        }
+
+        .close {
+            color: var(--color-text-secondary);
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .close:hover {
+            color: var(--color-accent);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--color-surface);
+            border-top: 1px solid var(--color-border);
+            padding: var(--space-md) 0;
+            text-align: center;
+            margin-top: var(--space-xl);
+        }
+
+        .footer-text {
+            color: var(--color-text-secondary);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        /* Language Content */
+        .lang-content {
+            display: none;
+        }
+
+        .lang-content.active {
+            display: block;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 var(--space-xs);
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: var(--space-xs);
+            }
+
+            .section {
+                padding: var(--space-md);
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            th, td {
+                padding: var(--space-xs);
+                font-size: 0.9rem;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+                padding: var(--space-md);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .section-title {
+                font-size: 1.3rem;
+            }
+
+            .section-description {
+                font-size: 1rem;
+            }
+
+            th, td {
+                padding: var(--space-xs) 6px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Привет! Добро пожаловать на мой GitHub Pages сайт!</h1>
-    <p>Это мой личный сайт, размещенный на GitHub Pages.</p>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">Traffic Guide</div>
+                <div class="header-controls">
+                    <div class="lang-switcher">
+                        <button class="lang-btn active" data-lang="ru">RU</button>
+                        <button class="lang-btn" data-lang="en">EN</button>
+                    </div>
+                    <button class="faq-btn" onclick="openModal()">FAQ</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <!-- Russian Content -->
+            <div class="lang-content active" id="ru-content">
+                <div class="section">
+                    <h2 class="section-title">Работа с рекламными кабинетами</h2>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Действие</th>
+                                    <th>Как реализовать</th>
+                                    <th>Почему это нужно</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Запускать несколько</td>
+                                    <td>2-3 кабинета для параллельной работы</td>
+                                    <td>Снижение рисков блокировки</td>
+                                </tr>
+                                <tr>
+                                    <td>Масштабировать схемы</td>
+                                    <td>Дублировать рабочие кампании (CBO/ABO)</td>
+                                    <td>Быстрее тестировать гипотезы</td>
+                                </tr>
+                                <tr>
+                                    <td>Учитывать таймзону</td>
+                                    <td>Старт в начале новых суток по гео</td>
+                                    <td>Реклама в активные часы</td>
+                                </tr>
+                                <tr>
+                                    <td>Контролировать метрики</td>
+                                    <td>Терпеть рост CTR/CPC, если в норме</td>
+                                    <td>Сохранение бюджета</td>
+                                </tr>
+                                <tr>
+                                    <td>PWA-лендинги</td>
+                                    <td>Быстрые посадочные страницы</td>
+                                    <td>Выше конверсия и доверие</td>
+                                </tr>
+                                <tr>
+                                    <td>Оптимизировать</td>
+                                    <td>Менять крео, а не просто множить их</td>
+                                    <td>Максимум эффективности</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="section-description">
+                        Если действовать последовательно, риск потерь от блокировок ниже, а охват и конверсии растут быстрее. Главное — не гнаться за количеством, а вовремя реагировать на сигналы платформ и аудитории.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">Креативы и подход к контенту</h2>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Совет</th>
+                                    <th>Как внедрить</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Делать локальные офферы</td>
+                                    <td>Язык, бренды и блогеры из региона</td>
+                                </tr>
+                                <tr>
+                                    <td>Тестировать сценарии</td>
+                                    <td>10+ разных крео, обновлять регулярно</td>
+                                </tr>
+                                <tr>
+                                    <td>Использовать ИИ</td>
+                                    <td>Видеоролики и баннеры через нейросети</td>
+                                </tr>
+                                <tr>
+                                    <td>Внедрять UGC и Adult</td>
+                                    <td>Для дополнительного трафика</td>
+                                </tr>
+                                <tr>
+                                    <td>Подчёркивать досуг</td>
+                                    <td>Гейминг — это привычка, не заработок</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="section-description">
+                        Креативы, нацеленные на реальный интерес аудитории, работают лучше любых шаблонов. Продуманная структура VSL — лучший путь для воронки: хук, идея, эмпатия, доказательства, оффер. Чем ближе смыслы к ценностям пользователя, тем лучше работает креатив; привычка — важнее мгновенной выгоды.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">Работа с аккаунтами</h2>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Шаг</th>
+                                    <th>Детали</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Регать вручную</td>
+                                    <td>Самостоятельное создание</td>
+                                </tr>
+                                <tr>
+                                    <td>Смена сим и почты</td>
+                                    <td>Каждому аккаунту свой телефон и Outlook</td>
+                                </tr>
+                                <tr>
+                                    <td>Повышать лимит картой</td>
+                                    <td>AmEx Бразилия для FB, после заменить на свою</td>
+                                </tr>
+                                <tr>
+                                    <td>Передача на "Кинг"</td>
+                                    <td>Основные кампании на трастовом аккаунте</td>
+                                </tr>
+                                <tr>
+                                    <td>Не смешивать GEO</td>
+                                    <td>Строго раздельные кабинеты</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="section-description">
+                        Правильная структура — всегда безопаснее и проще для масштабирования. Чем выше траст и чистота аккаунта, тем проще масштабироваться и получать большие лимиты.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">Telegram и беттинг</h2>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Приём</th>
+                                    <th>Как помогает</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Белый беттинг</td>
+                                    <td>Хорошая аудитория, меньше проблем</td>
+                                </tr>
+                                <tr>
+                                    <td>Многостраничники</td>
+                                    <td>SEO, охват и вовлечение</td>
+                                </tr>
+                                <tr>
+                                    <td>Нейро-креативы</td>
+                                    <td>Массовый охват бесплатно</td>
+                                </tr>
+                                <tr>
+                                    <td>Пост-оплата</td>
+                                    <td>Меньше рисков и расходов</td>
+                                </tr>
+                                <tr>
+                                    <td>Акцент на лайв</td>
+                                    <td>Сильнее вовлекает</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="section-description">
+                        Лучше работать с проверенными источниками, создавать много страниц/точек входа и использовать все современные инструменты по максимуму. Событийка работает слабее — упор на лайв и личное вовлечение.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">Мини-лайфхаки</h2>
+                    <ul class="bullet-list">
+                        <li>При просадке — пауза, перезапуск после 50 лидов.</li>
+                        <li>Всегда разделяйте данные по гео.</li>
+                        <li>Трастовый аккаунт — основная ценность.</li>
+                    </ul>
+                    <div class="section-description">
+                        Лучше делать просто, но не поверхностно. Анализируйте регулярно и тестируйте новые подходы.
+                    </div>
+                </div>
+            </div>
+
+            <!-- English Content -->
+            <div class="lang-content" id="en-content">
+                <div class="section">
+                    <h2 class="section-title">Managing Ad Accounts</h2>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Action</th>
+                                    <th>How to do</th>
+                                    <th>Why it matters</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Launch several accounts</td>
+                                    <td>2-3 in parallel, swap if banned</td>
+                                    <td>Reduces block risks</td>
+                                </tr>
+                                <tr>
+                                    <td>Scale with schemes</td>
+                                    <td>Duplicate strong campaigns (CBO/ABO)</td>
+                                    <td>Faster testing, more reach</td>
+                                </tr>
+                                <tr>
+                                    <td>Mind time-zone</td>
+                                    <td>Launch ads at new local day start</td>
+                                    <td>Hit active audience hours</td>
+                                </tr>
+                                <tr>
+                                    <td>Control metrics</td>
+                                    <td>Accept CTR/CPC fluctuation if conversions are fine</td>
+                                    <td>Saves budget</td>
+                                </tr>
+                                <tr>
+                                    <td>Use PWA landings</td>
+                                    <td>Fast landing pages</td>
+                                    <td>Better conversion, trust</td>
+                                </tr>
+                                <tr>
+                                    <td>Optimize, not multiply</td>
+                                    <td>Refresh creatives, don't make many copies</td>
+                                    <td>Maximum efficiency</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="section-description">
+                        If you stick to this process, you lower risks of loss and get growth and conversions faster. Focus on quality, react to both platforms and audience – don't chase quantity.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">Creatives &amp; Content Approach</h2>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tip</th>
+                                    <th>How to make it work</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Localize offers</td>
+                                    <td>Use language, brands, bloggers from region</td>
+                                </tr>
+                                <tr>
+                                    <td>Test scenarios</td>
+                                    <td>10+ creatives, update regularly</td>
+                                </tr>
+                                <tr>
+                                    <td>Use AI</td>
+                                    <td>Make videos and banners with AI</td>
+                                </tr>
+                                <tr>
+                                    <td>Add UGC &amp; Adult</td>
+                                    <td>For additional traffic only</td>
+                                </tr>
+                                <tr>
+                                    <td>Highlight entertainment</td>
+                                    <td>Gaming = habit, not just earning</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="section-description">
+                        Creatives focused on real user interests beat any templates. VSL structure works best for funnels: hook, idea, empathy, proof, offer. The closer to user values, the better the creative; habit beats quick gain.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">Account Management</h2>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Step</th>
+                                    <th>Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Register manually</td>
+                                    <td>Create yourself, don't buy</td>
+                                </tr>
+                                <tr>
+                                    <td>New SIM &amp; Outlook</td>
+                                    <td>Each account needs unique phone/email</td>
+                                </tr>
+                                <tr>
+                                    <td>Raise limit by card</td>
+                                    <td>AmEx Brazil for FB, then swap to your own</td>
+                                </tr>
+                                <tr>
+                                    <td>Pass to "King" acc</td>
+                                    <td>Main campaigns only on trusted account</td>
+                                </tr>
+                                <tr>
+                                    <td>Don't mix GEO</td>
+                                    <td>Keep accounts separated by region</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="section-description">
+                        A clean structure is always safer and easier to scale. The higher the trust and cleanliness, the bigger your limits and room to grow.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">Telegram &amp; Betting</h2>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Method</th>
+                                    <th>How does it help</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>White betting</td>
+                                    <td>Clean audience, less hassle</td>
+                                </tr>
+                                <tr>
+                                    <td>Multipage sites</td>
+                                    <td>SEO, reach, user engagement</td>
+                                </tr>
+                                <tr>
+                                    <td>Neuro creatives</td>
+                                    <td>Massive free reach</td>
+                                </tr>
+                                <tr>
+                                    <td>Post-pay offers</td>
+                                    <td>Fewer risks and costs</td>
+                                </tr>
+                                <tr>
+                                    <td>Focus on live</td>
+                                    <td>Engages users more</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="section-description">
+                        Best to work with proven sources, create more entry points, and use all modern tools. Event-based strategies don't perform as well now – focus on live and personal user involvement.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">Quick Lifehacks</h2>
+                    <ul class="bullet-list">
+                        <li>On traffic drop, pause, restart after 50 leads.</li>
+                        <li>Always separate data by region.</li>
+                        <li>Trusted account is your key asset.</li>
+                    </ul>
+                    <div class="section-description">
+                        Better to keep it simple, not shallow. Analyze and test new methods regularly.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FAQ Modal -->
+    <div id="faq-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">FAQ - Тезаурус / Glossary</h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            
+            <!-- Russian FAQ -->
+            <div class="lang-content active" id="ru-faq">
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Сокращение</th>
+                                <th>Значение</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>CBO</td><td>Оптимизация бюджета кампании</td></tr>
+                            <tr><td>ABO</td><td>Оптимизация бюджета группы</td></tr>
+                            <tr><td>CTR</td><td>Кликабельность</td></tr>
+                            <tr><td>CPC</td><td>Цена за клик</td></tr>
+                            <tr><td>GEO</td><td>Гео-регион</td></tr>
+                            <tr><td>PWA</td><td>Быстрый лендинг</td></tr>
+                            <tr><td>UGC</td><td>Контент от пользователей</td></tr>
+                            <tr><td>VSL</td><td>Видео-продажник</td></tr>
+                            <tr><td>TSL</td><td>Тексто-продажник</td></tr>
+                            <tr><td>Бай ак</td><td>Купленный аккаунт</td></tr>
+                            <tr><td>Трастакк</td><td>Доверие платформы</td></tr>
+                            <tr><td>Кингакк</td><td>Главный трастовый аккаунт</td></tr>
+                            <tr><td>SEO-трафик</td><td>Поисковый трафик</td></tr>
+                            <tr><td>УБТ</td><td>Универсальный беттинг-трафик</td></tr>
+                            <tr><td>FB</td><td>Facebook</td></tr>
+                            <tr><td>Хук</td><td>Зацепка, старт</td></tr>
+                            <tr><td>CREO</td><td>Креатив</td></tr>
+                            <tr><td>Brand push</td><td>Продвижение бренда</td></tr>
+                            <tr><td>Adult Content</td><td>Контент 18+</td></tr>
+                            <tr><td>Landing Page</td><td>Лендинг</td></tr>
+                            <tr><td>Offer</td><td>Оффер, предложение</td></tr>
+                            <tr><td>Post-pay</td><td>Постоплата</td></tr>
+                            <tr><td>Спай</td><td>Spy Tool</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- English FAQ -->
+            <div class="lang-content" id="en-faq">
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Abbreviation</th>
+                                <th>Meaning</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>CBO</td><td>Campaign Budget Optimization</td></tr>
+                            <tr><td>ABO</td><td>Ad Set Budget Optimization</td></tr>
+                            <tr><td>CTR</td><td>Click-Through Rate</td></tr>
+                            <tr><td>CPC</td><td>Cost per Click</td></tr>
+                            <tr><td>GEO</td><td>Geographic region</td></tr>
+                            <tr><td>PWA</td><td>Progressive Web App (fast landing)</td></tr>
+                            <tr><td>UGC</td><td>User-Generated Content</td></tr>
+                            <tr><td>VSL</td><td>Video Sales Letter</td></tr>
+                            <tr><td>TSL</td><td>Traffic Sales Letter</td></tr>
+                            <tr><td>Buy acc</td><td>Purchased account</td></tr>
+                            <tr><td>Trust acc</td><td>Trust of platform</td></tr>
+                            <tr><td>King acc</td><td>Main trusted account</td></tr>
+                            <tr><td>SEO traffic</td><td>Search Engine traffic</td></tr>
+                            <tr><td>UBT</td><td>Universal betting traffic</td></tr>
+                            <tr><td>FB</td><td>Facebook</td></tr>
+                            <tr><td>Hook</td><td>Catch, start</td></tr>
+                            <tr><td>CREO</td><td>Creative</td></tr>
+                            <tr><td>Brand push</td><td>Brand promotion</td></tr>
+                            <tr><td>Adult Content</td><td>18+ content</td></tr>
+                            <tr><td>Landing Page</td><td>Landing</td></tr>
+                            <tr><td>Offer</td><td>Offer, promo</td></tr>
+                            <tr><td>Post-pay</td><td>Post-payment</td></tr>
+                            <tr><td>Spy</td><td>Spy Tool</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-text">From Dmitry with love</div>
+        </div>
+    </footer>
+
+    <script>
+        let currentLang = 'ru';
+
+        // Language switching
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const newLang = btn.dataset.lang;
+                if (newLang !== currentLang) {
+                    switchLanguage(newLang);
+                }
+            });
+        });
+
+        function switchLanguage(lang) {
+            // Update current language
+            currentLang = lang;
+            
+            // Update language buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+            
+            // Switch main content
+            document.querySelectorAll('#ru-content, #en-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(lang + '-content').classList.add('active');
+            
+            // Switch FAQ content if modal is open
+            document.querySelectorAll('#ru-faq, #en-faq').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(lang + '-faq').classList.add('active');
+            
+            // Update document language
+            document.documentElement.lang = lang;
+        }
+
+        // Modal functionality
+        function openModal() {
+            document.getElementById('faq-modal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('faq-modal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('faq-modal');
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Smooth scrolling for better UX
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add smooth transitions
+            document.body.style.transition = 'all 0.3s ease';
+        });
+    </script>
 </body>
 </html>
